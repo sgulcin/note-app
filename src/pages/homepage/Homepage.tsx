@@ -14,7 +14,7 @@ function Homepage() {
       <div className="col-span-1 lg:col-span-1">
         <NoteItem />
       </div>
-      <div className="h-screen bg-white bg-forest p-10 col-span-2 lg:col-span-3 rounded">
+      <div className="h-screen bg-white bg-forest p-10 col-span-2 lg:col-span-3">
         <NoteEditor />
       </div>
     </div>
