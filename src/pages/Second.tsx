@@ -1,5 +1,5 @@
-function Second(){
-    return(
+function Second() {
+    return (
         <div>why
         </div>
     )
