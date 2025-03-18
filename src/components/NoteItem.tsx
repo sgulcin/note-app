@@ -1,39 +1,42 @@
-import React, { useState} from 'react';
-
-const initialNotes = [
-    { id: 1, title: 'Note Title 1', date: '19.01.2025' },
-    { id: 2, title: 'Note Title 2', date: '20.01.2025' },
-    { id: 3, title: 'Note Title 3', date: '21.01.2025' },
-    { id: 4, title: 'Note Title 5', date: '22.01.2025' },
-];
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { AppDispatch } from '../store/store';
+import { RootState } from '../store/rootReducer';   
+import { addNote, removeNote, updateNote, setActiveNote, fetchNotes } from '../store/noteItemSlice';
 
 function NoteItem() {
-    const [notes, setNotes] = useState(initialNotes);
-    const [activeNote, setActiveNote] = useState(notes[0]);
+    const dispatch = useDispatch<AppDispatch>();
+    const { items, loading, error, activeNoteId } = useSelector((state: RootState) => state.noteItem);
 
+    useEffect(() => {
+        dispatch(fetchNotes());
+    }, [dispatch]);
+
+    if (loading) return <p>Loading...</p>;
+    if (error) return <p>Error: {error}</p>;
+  
     const handleNoteClick = (note:any) => {
-        setActiveNote(note);        
+        dispatch(setActiveNote(note._id));       
     }
 
-    const handleDeleteNote = (note:any) => {
-        const remainingNotes = notes.filter((n) => n.id !== note.id);
-        setNotes(remainingNotes);
-        if (activeNote?.id === note.id) {
-            setActiveNote(notes[0]);
-        }   
-    }
+    const handleDeleteNote = (note: any) => {
+        dispatch(removeNote(note._id));
+        if (activeNoteId === note._id) {
+            dispatch(setActiveNote(items[0]?._id));
+        }
+    };
 
     return (
         <>
-            {notes.map((note) => (
-                <div key={note.id} 
+            {items.map((note) => (
+                <div key={note._id} 
                     onClick={() => handleNoteClick(note)}
-                    className={`bg-slate-50 hover:bg-slate-100 mb-2 p-4 ${activeNote?.id === note.id ? 'shadow active-note' : ''}`}   
+                    className={`bg-slate-50 hover:bg-slate-100 mb-2 p-4 ${activeNoteId === note._id ? 'shadow active-note' : ''}`}   
                     >
                     <div className="flex justify-between items-center pb-4">
                         <div className="note-title">
-                            <h2 className={`${activeNote?.id === note.id ? 'font-medium text-sky-900' : 'text-sky-700 font-light'}`}>
-                                {note.title}
+                            <h2 className={`${activeNoteId === note._id ? 'font-medium text-sky-900' : 'text-sky-700 font-light'}`}>
+                                {note.title} 
                             </h2>
                         </div>
                         <button className="text-red-800 hover:text-red-700"
@@ -46,7 +49,7 @@ function NoteItem() {
                             </svg>
                         </button>
                     </div>
-                    <p className={`border-t border-t-sky-900 pt-2 italic text-xs ${activeNote?.id === note.id ? 'text-gray-700' : 'text-gray-400'}`}>{note.date}</p>
+                    <p className={`border-t border-t-sky-900 pt-2 italic text-xs ${activeNoteId === note._id ? 'text-gray-700' : 'text-gray-400'}`}>{note.date}</p>
                 </div>
             ))}
         </>
