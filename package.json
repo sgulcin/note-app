@@ -1,7 +1,7 @@
 {
-  "name": "react",
+  "name": "gulcinguven",
   "version": "1.0.0",
-  "description": "",
+  "description": "personal note app",
   "main": "index.js",
   "scripts": {
     "start": "webpack serve --hot --mode development",
